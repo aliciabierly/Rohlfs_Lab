@@ -59,5 +59,7 @@ awk '{
 }' "$OUTDIR/data/hg38_1kg_segments_filtered_id_prob.txt" > "$OUTDIR/data/hg38_1kg_segments_filtered.bed"
 
 $LIFTOVER -bedPlus=3 -tab -minMatch=0.9 "$OUTDIR/data/hg38_1kg_segments_filtered.bed" $OUTDIR/data/hg38-chm13v2.over.chain $OUTDIR/t2t_coordinates_mapped.bed $OUTDIR/t2t_coordinates_unmapped.bed
-
 echo "Processing archaic data complete!"
+
+# remove intermediate files as needed
+# rm -r "$OUTDIR/data/" 
