@@ -4,6 +4,6 @@ This repository contains scripts I have created while working in the Rohlfs lab.
 
 ## Project Structure:
 * /data : contains metadata of information about individuals included in this study (from 1000KG).
-* * /data
+ * /data
 * /notebooks : contains jupyter notebooks for analysis of individuals.
 * /scripts : contains bash and C scripts used in Talapas to perform analysis on genomes of individuals in the study.
