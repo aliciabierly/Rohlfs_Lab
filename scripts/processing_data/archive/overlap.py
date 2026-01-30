@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# this script checks that there are no overlapping archaic tracts for each individual.
+# aka archaic tract start and end are unique per individual.
 import sys
 import pandas as pd
 import numpy as np
