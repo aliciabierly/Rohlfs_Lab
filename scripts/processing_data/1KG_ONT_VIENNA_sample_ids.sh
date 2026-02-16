@@ -2,11 +2,11 @@
 curl -s ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1KG_ONT_VIENNA/t2t/ \
   | awk -F'.t2t.cram' '/\.t2t\.cram/ {print $1}' \
   | awk -F'>' '{print $NF}' \
-  | sort -u | awk '{print $9}' > sample_ids.txt
+  | awk '{print $9}' | uniq > sample_ids.txt
 
 curl -s https://zenodo.org/records/14136628/files/hg38_1000g_segments.txt \
   | cut -f1 \
-  | sort -u > unique_sample_ids.txt
+  | uniq > unique_sample_ids.txt
 
 sort sample_ids.txt -o sample_ids.sorted.txt
 sort unique_sample_ids.txt -o unique_sample_ids.sorted.txt
