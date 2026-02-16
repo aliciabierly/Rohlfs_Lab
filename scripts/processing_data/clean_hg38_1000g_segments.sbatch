@@ -43,8 +43,17 @@ fi
 echo "Begin filtering"
 grep -F -f $SAMPLE_IDS $SAMPLE_FILE > "$OUTDIR/data/hg38_1kg_segments_filtered_id.txt"
 
-# filter data for mean_prob >= 0.75; mean_prob=$8
-awk '$8 >= 0.75 {print $0}' "$OUTDIR/data/hg38_1kg_segments_filtered_id.txt" > "$OUTDIR/data/hg38_1kg_segments_filtered_id_prob.txt"
+# filter data for mean_prob >= 0.8; mean_prob=$8
+awk '$8 >= 0.8 {print $0}' "$OUTDIR/data/hg38_1kg_segments_filtered_id.txt" > "$OUTDIR/data/hg38_1kg_segments_filtered_id_prob.txt"
+
+# filter snps >= 10
+awk '$10 >= 10 {print $0}' "$OUTDIR/data/hg38_1kg_segments_filtered_id_prob.txt" > "$OUTDIR/data/filtered_1.txt"
+
+# filter end - start >= 40 
+awk '$7 - $6 >= 40' "$OUTDIR/data/filtered_1.txt" > "$OUTDIR/data/filtered_2.txt"
+
+# filter ND_type != "none"
+awk '$9 != "none"' "$OUTDIR/data/filtered_2.txt" > "$OUTDIR/data/filtered_3.txt"
 
 # liftover segments from HG38 -> T2T
 echo "liftover"
@@ -56,7 +65,7 @@ awk '{
     }
   }
   printf "\n"
-}' "$OUTDIR/data/hg38_1kg_segments_filtered_id_prob.txt" > "$OUTDIR/data/hg38_1kg_segments_filtered.bed"
+}' "$OUTDIR/data/filtered_3.txt" > "$OUTDIR/data/hg38_1kg_segments_filtered.bed"
 
 $LIFTOVER -bedPlus=3 -tab -minMatch=0.9 "$OUTDIR/data/hg38_1kg_segments_filtered.bed" $OUTDIR/data/hg38-chm13v2.over.chain $OUTDIR/t2t_coordinates_mapped.bed $OUTDIR/t2t_coordinates_unmapped.bed
 echo "Processing archaic data complete!"
