@@ -89,11 +89,16 @@ while IFS=$'\t' read -r line; do
         "$OUTDIR/data/dummy_mapped.bed" \
         "$OUTDIR/data/dummy_unmapped.bed"
 
-    # 5. Extract the 2nd column of the mapped results and comma-separate them
-    new_NF=$(cut -f2 "$OUTDIR/data/dummy_mapped.bed" | paste -sd, -)
+    if [ ! -s "$OUTDIR/data/dummy_unmapped.bed" ]; then
+        
+        # 5. Extract the 2nd column and comma-separate them
+        new_NF=$(cut -f2 "$OUTDIR/data/dummy_mapped.bed" | paste -sd, -)
 
-    # 6. Print the original columns (prefix) + the new processed column
-    echo -e "${prefix}\t${new_NF}" >> "$OUTDIR/final_output.bed"
+        # 6. Print the original columns (prefix) + the new processed column
+        echo -e "${prefix}\t${new_NF}" >> "$OUTDIR/final_output.bed"
+    else
+        echo "Warning: Some coordinates in line could not be mapped. Skipping or log to error file."
+    fi
 
 done < "$OUTDIR/t2t_coordinates_mapped.bed"
 
