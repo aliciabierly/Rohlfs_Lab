@@ -68,7 +68,34 @@ awk '{
 }' "$OUTDIR/data/filtered_3.txt" > "$OUTDIR/data/hg38_1kg_segments_filtered.bed"
 
 $LIFTOVER -bedPlus=3 -tab -minMatch=0.9 "$OUTDIR/data/hg38_1kg_segments_filtered.bed" $OUTDIR/data/hg38-chm13v2.over.chain $OUTDIR/t2t_coordinates_mapped.bed $OUTDIR/t2t_coordinates_unmapped.bed
-echo "Processing archaic data complete!"
+echo "Initial processing archaic data complete!"
+
+# Loop through the original file
+while IFS=$'\t' read -r line; do
+    # 1. Get all columns except the last one
+    # 2. Get the last column separately
+    prefix=$(echo "$line" | rev | cut -f2- | rev)
+    last_col=$(echo "$line" | awk '{print $NF}')
+
+    # 3. Create the dummy.bed for liftover
+    # We take each comma-separated value and make a BED row
+    echo "$last_col" | tr ',' '\n' | awk -v chrom="$(echo "$line" | cut -f1)" \
+        '{print chrom, $1, $1+1}' OFS='\t' > "$OUTDIR/data/dummy.bed"
+
+    # 4. Run your Liftover command
+    $LIFTOVER -bedPlus=3 -tab -minMatch=0.9 \
+        "$OUTDIR/data/dummy.bed" \
+        "$OUTDIR/data/hg38-chm13v2.over.chain" \
+        "$OUTDIR/data/dummy_mapped.bed" \
+        "$OUTDIR/data/dummy_unmapped.bed"
+
+    # 5. Extract the 2nd column of the mapped results and comma-separate them
+    new_NF=$(cut -f2 "$OUTDIR/data/dummy_mapped.bed" | paste -sd, -)
+
+    # 6. Print the original columns (prefix) + the new processed column
+    echo -e "${prefix}\t${new_NF}" >> "$OUTDIR/final_output.bed"
+
+done < "$OUTDIR/t2t_coordinates_mapped.bed"
 
 # remove intermediate files as needed
 # rm -r "$OUTDIR/data/" 
