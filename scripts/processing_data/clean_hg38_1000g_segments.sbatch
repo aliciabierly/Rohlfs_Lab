@@ -19,7 +19,7 @@ INPUTDIR="/gpfs/scratch/rohlfslab/abierly2"
 REFERENCE="$OUTDIR/data/hg38-chm13v2.over.chain"
 
 SAMPLE_FILE="$OUTDIR/data/hg38_1000g_segments.txt"
-SAMPLE_IDS="/gpfs/projects/rohlfslab/shared/hannah_alicia_shared_sampleIDs.txt"
+SAMPLE_IDS="shared_ids.txt"
 mkdir -p "$OUTDIR"
 mkdir -p "$OUTDIR/data"
 
@@ -37,6 +37,8 @@ if [ ! -f $REFERENCE ]; then
    wget -P "$OUTDIR/data" https://hgdownload.soe.ucsc.edu/hubs/GCA/009/914/755/GCA_009914755.4/liftOver/hg38-chm13v2.over.chain.gz
    gzip -d < "$OUTDIR/data/hg38-chm13v2.over.chain.gz" > "$OUTDIR/data/hg38-chm13v2.over.chain"
 fi
+
+wget https://raw.githubusercontent.com/aliciabierly/Rohlfs_Lab/main/data/shared_ids.txt
 
 ### CLEAN DATA
 #   filter data for only samples present in TR dataset
@@ -104,3 +106,4 @@ done < "$OUTDIR/t2t_coordinates_mapped.bed"
 
 # remove intermediate files as needed
 # rm -r "$OUTDIR/data/" 
+# rm shared_ids.txt
