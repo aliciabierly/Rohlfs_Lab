@@ -11,6 +11,8 @@
 #SBATCH --nodes=1                        ### Number of nodes needed for the job
 #SBATCH --mem=1G                       ### Total Memory for job in MB -- can do K/M/G/T for KB/MB/GB/TB
 #SBATCH --cpus-per-task=1                ### Number of cpus/cores to be launched per Task
+# This file cleans the archaic dataset from hmmix. 
+# Processes include: filtering sample names, filtering values, and lifting coordinates to t2t reference genome.
 
 ### DEFINE VARIABLES
 LIFTOVER=/gpfs/projects/rohlfslab/software/liftover/liftOver
