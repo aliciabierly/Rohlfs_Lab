@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH --job-name=download_data
-#SBATCH --mem=48G
+#SBATCH --mem=4G
 #SBATCH --time=1-00:0:00                 # increased time for reliability
-#SBATCH --cpus-per-task=24
+#SBATCH --cpus-per-task=2
 #SBATCH --ntasks=1
-#SBATCH --partition=computelong
+#SBATCH --partition=compute
 #SBATCH --account=rohlfslab
 #SBATCH --array=1-771%50                # only 35 running at once
 #SBATCH --output=logs/download_%A_%a.out
@@ -45,3 +45,5 @@ else
     echo "Downloading CRAI..."
     wget -q "${SAMPLE_URL}.crai" -O "${CRAI}"
 fi
+
+echo "Sample done downloading!"
