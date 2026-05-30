@@ -4,3 +4,6 @@
 
 ### Reference File
 - pull out regions: samtools faidx GRCh38_no_alt_analysis_set_GCA_000001405.15.fasta chr1:777836-777950 chr2:1234567-1234789
+
+### General files:
+- pull out particular row of file: awk 'NR==2343418' TR_catalog_normalized.bed
