@@ -108,5 +108,5 @@ while IFS=$'\t' read -r line; do
 done < "$OUTDIR/t2t_coordinates_mapped.bed"
 
 # remove intermediate files as needed
-# rm -r "$OUTDIR/data/" 
-# rm shared_ids.txt
+rm -r "$OUTDIR/data/" 
+rm shared_ids.txt
