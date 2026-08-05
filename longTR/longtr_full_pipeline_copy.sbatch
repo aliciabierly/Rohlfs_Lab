@@ -6,7 +6,7 @@
 #SBATCH --ntasks=1
 #SBATCH --partition=computelong
 #SBATCH --account=rohlfslab
-#SBATCH --array=1-2%2                # only 35 running at once
+#SBATCH --array=3-711%35                # only 35 running at once
 #SBATCH --output=logs/longtr_%A_%a.out
 #SBATCH --error=logs/longtr_%A_%a.err   # Keep error files !
 
@@ -163,4 +163,7 @@ echo "Indexing merged VCF for $SAMPLE..."
 tabix -p vcf ${MERGED_VCF}
 
 echo "Pipeline complete for $SAMPLE!"
+
+echo "Remove intermediate files"  ### has not been tested
+rm -r ${OUTDIR}
 date

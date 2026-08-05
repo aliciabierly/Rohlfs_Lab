@@ -1,5 +1,0 @@
-LongTR full pipeline starting
-Wed Aug  5 12:16:54 PDT 2026
-Processing sample: HG00099
-Missing or unindexed: /scratch/rohlfslab/abierly2/LongTR_indel25/longTR_pipeline_HG00099/HG00099.chr1.vcf.gz
-Some per-chromosome VCFs missing. Running genotyping...

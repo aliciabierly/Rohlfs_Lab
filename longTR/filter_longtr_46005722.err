@@ -1,5 +1,0 @@
-Writing to /tmp/bcftools.eJ0CEu
-[E::hts_open_format] Failed to open file "/scratch/rohlfslab/abierly2/LongTR/filtered_vcfs/*.filtered.vcf.gz" : No such file or directory
-Could not read /scratch/rohlfslab/abierly2/LongTR/filtered_vcfs/*.filtered.vcf.gz
-Cleaning
-tbx_index_build3 failed: /scratch/rohlfslab/abierly2/LongTR/sorted_vcfs/*.filtered.vcf.gz.sorted.vcf.gz

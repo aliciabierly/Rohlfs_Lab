@@ -36,7 +36,7 @@ for vcf in ${IN_DIR}/*.merged.vcf.gz; do
     FILTERED_VCF="${FILTERED_DIR}/${base%.merged.vcf.gz}.filtered.vcf.gz"
     SORTED_VCF="${SORTED_DIR}/${base%.merged.vcf.gz}.sorted.vcf.gz"
     echo "Processing $base ..."
-    if [[ -f "$outvcf" && -f "${outvcf}.tbi" ]]; then
+    if [[ -f "$SORTED_VCF" && -f "${SORTED_VCF}.tbi" ]]; then
         echo "Skipping $base (already processed)"
         continue
     fi
@@ -57,3 +57,7 @@ for vcf in ${IN_DIR}/*.merged.vcf.gz; do
 done
 
 echo "DONE. Filtered files are complete!"
+
+echo "Remove intermediate files." ### has not been tested
+rm -r "IN_DIR"
+rm -r "$FILTERED_DIR"
