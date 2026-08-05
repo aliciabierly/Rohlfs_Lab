@@ -1,0 +1,28 @@
+[E::cram_uncompress_block] Block CRC32 failure
+[E::cram_next_slice] Failure to decode slice
+samtools view: retrieval of region #0 failed
+double free or corruption (out)
+/usr/bin/bash: line 33: 893909 Aborted                 (core dumped) LongTR --bams $TEMP_BAM --fasta /projects/rohlfslab/shared/reference_genomes/1KG_ONT_VIENNA_t2t_REFERENCE.fa --regions $BED --tr-vcf ${VCF_OUT} --min-mean-qual 0 --indel-flank-len 0 --log /dev/null
+[tabix] the compression of '/scratch/rohlfslab/abierly2/LongTR/longTR_pipeline_HG00096/HG00096.chr17.vcf.gz' is not BGZF
+free(): invalid next size (fast)
+/usr/bin/bash: line 33: 893953 Aborted                 (core dumped) LongTR --bams $TEMP_BAM --fasta /projects/rohlfslab/shared/reference_genomes/1KG_ONT_VIENNA_t2t_REFERENCE.fa --regions $BED --tr-vcf ${VCF_OUT} --min-mean-qual 0 --indel-flank-len 0 --log /dev/null
+[tabix] the compression of '/scratch/rohlfslab/abierly2/LongTR/longTR_pipeline_HG00096/HG00096.chrY.vcf.gz' is not BGZF
+free(): invalid next size (fast)
+/usr/bin/bash: line 33: 894068 Aborted                 (core dumped) LongTR --bams $TEMP_BAM --fasta /projects/rohlfslab/shared/reference_genomes/1KG_ONT_VIENNA_t2t_REFERENCE.fa --regions $BED --tr-vcf ${VCF_OUT} --min-mean-qual 0 --indel-flank-len 0 --log /dev/null
+[tabix] the compression of '/scratch/rohlfslab/abierly2/LongTR/longTR_pipeline_HG00096/HG00096.chr21.vcf.gz' is not BGZF
+double free or corruption (out)
+/usr/bin/bash: line 33: 894236 Aborted                 (core dumped) LongTR --bams $TEMP_BAM --fasta /projects/rohlfslab/shared/reference_genomes/1KG_ONT_VIENNA_t2t_REFERENCE.fa --regions $BED --tr-vcf ${VCF_OUT} --min-mean-qual 0 --indel-flank-len 0 --log /dev/null
+[tabix] the compression of '/scratch/rohlfslab/abierly2/LongTR/longTR_pipeline_HG00096/HG00096.chr19.vcf.gz' is not BGZF
+double free or corruption (out)
+/usr/bin/bash: line 33: 894270 Aborted                 (core dumped) LongTR --bams $TEMP_BAM --fasta /projects/rohlfslab/shared/reference_genomes/1KG_ONT_VIENNA_t2t_REFERENCE.fa --regions $BED --tr-vcf ${VCF_OUT} --min-mean-qual 0 --indel-flank-len 0 --log /dev/null
+[tabix] the compression of '/scratch/rohlfslab/abierly2/LongTR/longTR_pipeline_HG00096/HG00096.chr22.vcf.gz' is not BGZF
+double free or corruption (out)
+/usr/bin/bash: line 33: 894284 Aborted                 (core dumped) LongTR --bams $TEMP_BAM --fasta /projects/rohlfslab/shared/reference_genomes/1KG_ONT_VIENNA_t2t_REFERENCE.fa --regions $BED --tr-vcf ${VCF_OUT} --min-mean-qual 0 --indel-flank-len 0 --log /dev/null
+[tabix] the compression of '/scratch/rohlfslab/abierly2/LongTR/longTR_pipeline_HG00096/HG00096.chr20.vcf.gz' is not BGZF
+double free or corruption (out)
+/usr/bin/bash: line 33: 894349 Aborted                 (core dumped) LongTR --bams $TEMP_BAM --fasta /projects/rohlfslab/shared/reference_genomes/1KG_ONT_VIENNA_t2t_REFERENCE.fa --regions $BED --tr-vcf ${VCF_OUT} --min-mean-qual 0 --indel-flank-len 0 --log /dev/null
+[tabix] the compression of '/scratch/rohlfslab/abierly2/LongTR/longTR_pipeline_HG00096/HG00096.chrX.vcf.gz' is not BGZF
+free(): invalid next size (fast)
+/usr/bin/bash: line 33: 894351 Aborted                 (core dumped) LongTR --bams $TEMP_BAM --fasta /projects/rohlfslab/shared/reference_genomes/1KG_ONT_VIENNA_t2t_REFERENCE.fa --regions $BED --tr-vcf ${VCF_OUT} --min-mean-qual 0 --indel-flank-len 0 --log /dev/null
+[tabix] the compression of '/scratch/rohlfslab/abierly2/LongTR/longTR_pipeline_HG00096/HG00096.chr18.vcf.gz' is not BGZF
+slurmstepd: error: *** JOB 46005313 ON n0187 CANCELLED AT 2026-08-05T12:12:03 ***
