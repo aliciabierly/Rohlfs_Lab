@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH --job-name=longtr_bedfile
-#SBATCH --mem=48G
-#SBATCH --time=3-00:0:00                 # increased time for reliability
+#SBATCH --mem=10G
+#SBATCH --time=1-00:0:00                 # increased time for reliability
 #SBATCH --cpus-per-task=1
 #SBATCH --ntasks=1
-#SBATCH --partition=computelong
+#SBATCH --partition=compute
 #SBATCH --account=rohlfslab
 #SBATCH --array=1-711%35                # only 35 running at once
 #SBATCH --output=logs/longtr_bedfile_%A_%a.out
@@ -20,25 +20,62 @@ conda activate longtr_venv
 module load samtools
 module load parallel/20241222
 module load bcftools
+module load bedtools
 
 ### PATHS
 SAMPLE=$(sed -n "${SLURM_ARRAY_TASK_ID}p" /projects/rohlfslab/shared/hannah_alicia_shared_sampleIDs.txt)
 echo "Processing sample: $SAMPLE"
 
 SCRATCH="/scratch/rohlfslab/abierly2"
-IN_DIR="${SCRATCH}/sorted_vcfs"
-OUT_DIR="${SCRATCH}/bedfiles"
-SAMPLE_FILE="${IN_DIR}/${SAMPLE}.sorted.vcf.gz"
-mkdir -p ${OUT_DIR}
+IN_DIR_MAIN="${SCRATCH}/LongTR"
+IN_DIR="${IN_DIR_MAIN}/sorted_vcfs"
+BED_DIR="${IN_DIR_MAIN}/bedfiles"
+SAMPLE_SORTED_FILE="${IN_DIR}/${SAMPLE}.sorted.vcf.gz"
+R_DIR="${IN_DIR_MAIN}/repeats"
+SAMPLE_R_FILE="${R_DIR}/${SAMPLE}.r.vcf.gz"
+CATALOG="/projects/rohlfslab/shared/TR_catalogs/TR_catalog_normalized.bed"
+CATALOG_SORTED="${IN_DIR_MAIN}/TR_catalog_normalized_sorted.bed"
+MASTER_TR_DIR="${IN_DIR_MAIN}/master_tr"
+MASTER_TR_FILE="${MASTER_TR_DIR}/${SAMPLE}.master_tr.bed"
+MATRIX_TEMP_DIR="${IN_DIR_MAIN}/matrix_temp"
+MATRIX_FINAL_DIR="${IN_DIR_MAIN}/matrix_final"
 
-BED="${OUT_DIR}/${SAMPLE}.bed"
+mkdir -p ${BED_DIR}
+mkdir -p ${R_DIR}
+mkdir -p ${MASTER_TR_DIR}
+mkdir -p ${MATRIX_TEMP_DIR}
+mkdir -p ${MATRIX_FINAL_DIR}
 
-bcftools query -f "%CHROM\t%START\t%END\t%PERIOD\t%REF\t[%GB]" "${SAMPLE_FILE}" > "${BED}"
+SAMPLE_BED_FILE="${BED_DIR}/${SAMPLE}.bed"
 
-python3 find_length_of_trs.py "${BED}"
+conda deactivate
+conda activate ds_env
+./calculate_tr_repeat_lengths.py "$SAMPLE_SORTED_FILE" "$SAMPLE_R_FILE" "$SAMPLE" "False"
+conda deactivate
 
-# python file will run on just the ind files, will multiply the period * 2.5. 
-# calculate the len(REF)
-# seperate the GB values
-# add each GB value to the len(REF)
-# compare to period * 2.5 threshold and if higher, count if lower put NA.
+conda activate longtr_venv
+bcftools query -f "%CHROM\t%START\t%END\t[%R]\t[%HET]" "$SAMPLE_R_FILE" > "$SAMPLE_BED_FILE"
+
+# fix TR catalog
+if [[ ! -f "$CATALOG_SORTED" ]]; then
+    echo "sorted catalog not in folder, creating now."
+    sort -k1,1V -k2,2n -k3,3n "$CATALOG" > "$CATALOG_SORTED"
+fi
+
+bedtools intersect -a "$CATALOG_SORTED" -b "$SAMPLE_BED_FILE" -loj > "$MASTER_TR_FILE"
+
+awk -F'\t' 'BEGIN{ORS=","} {$9=($9=="." ? 0 : $9=="-1" ? "NA" : $9); print $9}' "$MASTER_TR_FILE" > "${MATRIX_TEMP_DIR}/${SAMPLE}.het.txt"
+awk -F'\t' 'BEGIN{ORS=","} {print ($8=="-1" ? "NA" : $8)}' "$MASTER_TR_FILE" > "${MATRIX_TEMP_DIR}/${SAMPLE}.gt.txt"
+
+
+for f in "${MATRIX_TEMP_DIR}"/*.gt.txt; do
+    printf "%s," "$(basename "${f%.gt.txt}")"
+    cat "$f"
+    echo
+done > "${MATRIX_FINAL_DIR}/all.gt.txt"
+
+for f in "${MATRIX_TEMP_DIR}"/*.het.txt; do
+    printf "%s," "$(basename "${f%.het.txt}")"
+    cat "$f"
+    echo
+done > "${MATRIX_FINAL_DIR}/all.het.txt"
