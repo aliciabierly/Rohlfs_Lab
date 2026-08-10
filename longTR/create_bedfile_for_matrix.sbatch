@@ -64,8 +64,9 @@ fi
 
 bedtools intersect -a "$CATALOG_SORTED" -b "$SAMPLE_BED_FILE" -loj > "$MASTER_TR_FILE"
 
-awk -F'\t' 'BEGIN{ORS=","} {$9=($9=="." ? 0 : $9=="-1" ? "NA" : $9); print $9}' "$MASTER_TR_FILE" > "${MATRIX_TEMP_DIR}/${SAMPLE}.het.txt"
-awk -F'\t' 'BEGIN{ORS=","} {print ($8=="-1" ? "NA" : $8)}' "$MASTER_TR_FILE" > "${MATRIX_TEMP_DIR}/${SAMPLE}.gt.txt"
+# keep files as tab seperated because this is what is compatible with datamash (to transpose the matrix/file)
+awk -F'\t' 'BEGIN{ORS="\t"} {$9=($9=="." ? 0 : $9=="-1" ? "NA" : $9); print $9}' "$MASTER_TR_FILE" > "${MATRIX_TEMP_DIR}/${SAMPLE}.het.txt"
+awk -F'\t' 'BEGIN{ORS="\t"} {print ($8=="-1" ? "NA" : $8)}' "$MASTER_TR_FILE" > "${MATRIX_TEMP_DIR}/${SAMPLE}.gt.txt"
 
 
 for f in "${MATRIX_TEMP_DIR}"/*.gt.txt; do
