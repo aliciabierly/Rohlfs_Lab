@@ -1,12 +1,12 @@
 #!/bin/bash
 #SBATCH --job-name=longtr_bedfile
-#SBATCH --mem=10G
+#SBATCH --mem=20G
 #SBATCH --time=1-00:0:00                 # increased time for reliability
 #SBATCH --cpus-per-task=1
 #SBATCH --ntasks=1
 #SBATCH --partition=compute
 #SBATCH --account=rohlfslab
-#SBATCH --array=1-711%35                # only 35 running at once
+#SBATCH --array=1-711%50                # only 35 running at once
 #SBATCH --output=logs/longtr_bedfile_%A_%a.out
 #SBATCH --error=logs/longtr_bedfile%A_%a.err   # Keep error files !
 # this file creates a bedfile of the TR length information, converts to lengths to 
@@ -50,6 +50,7 @@ SAMPLE_BED_FILE="${BED_DIR}/${SAMPLE}.bed"
 
 conda deactivate
 conda activate ds_env
+# finds the copy number per TR
 ./calculate_tr_repeat_lengths.py "$SAMPLE_SORTED_FILE" "$SAMPLE_R_FILE" "$SAMPLE" "False"
 conda deactivate
 
@@ -64,19 +65,10 @@ fi
 
 bedtools intersect -a "$CATALOG_SORTED" -b "$SAMPLE_BED_FILE" -loj > "$MASTER_TR_FILE"
 
-# keep files as tab seperated because this is what is compatible with datamash (to transpose the matrix/file)
-awk -F'\t' 'BEGIN{ORS="\t"} {$9=($9=="." ? 0 : $9=="-1" ? "NA" : $9); print $9}' "$MASTER_TR_FILE" > "${MATRIX_TEMP_DIR}/${SAMPLE}.het.txt"
-awk -F'\t' 'BEGIN{ORS="\t"} {print ($8=="-1" ? "NA" : $8)}' "$MASTER_TR_FILE" > "${MATRIX_TEMP_DIR}/${SAMPLE}.gt.txt"
+# Create individual sample files if they don't already exist
+awk -F'\t' 'BEGIN{ORS="\t"} {$9=($9=="." ? 0 : $9=="-1" ? "NA" : $9); print $9}' \
+    "$MASTER_TR_FILE" > "${MATRIX_TEMP_DIR}/${SAMPLE}.het.txt"
+awk -F'\t' 'BEGIN{ORS="\t"} {print ($8=="-1" ? "NA" : $8)}' \
+    "$MASTER_TR_FILE" > "${MATRIX_TEMP_DIR}/${SAMPLE}.gt.txt"
 
-
-for f in "${MATRIX_TEMP_DIR}"/*.gt.txt; do
-    printf "%s," "$(basename "${f%.gt.txt}")"
-    cat "$f"
-    echo
-done > "${MATRIX_FINAL_DIR}/all.gt.txt"
-
-for f in "${MATRIX_TEMP_DIR}"/*.het.txt; do
-    printf "%s," "$(basename "${f%.het.txt}")"
-    cat "$f"
-    echo
-done > "${MATRIX_FINAL_DIR}/all.het.txt"
+conda deactivate
