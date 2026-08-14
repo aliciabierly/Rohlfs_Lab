@@ -4,7 +4,7 @@
 #SBATCH --time=1-00:0:00                 # increased time for reliability
 #SBATCH --cpus-per-task=1
 #SBATCH --ntasks=1
-#SBATCH --partition=compute
+#SBATCH --partition=rohlfs
 #SBATCH --account=rohlfslab
 #SBATCH --array=1-711%50                # only 35 running at once
 #SBATCH --output=logs/longtr_bedfile_%A_%a.out
@@ -27,10 +27,11 @@ SAMPLE=$(sed -n "${SLURM_ARRAY_TASK_ID}p" /projects/rohlfslab/shared/hannah_alic
 echo "Processing sample: $SAMPLE"
 
 SCRATCH="/scratch/rohlfslab/abierly2"
-IN_DIR_MAIN="${SCRATCH}/LongTR"
+IN_DIR_MAIN="${SCRATCH}/LongTR_new_parameters"
 IN_DIR="${IN_DIR_MAIN}/sorted_vcfs"
 BED_DIR="${IN_DIR_MAIN}/bedfiles"
 SAMPLE_SORTED_FILE="${IN_DIR}/${SAMPLE}.sorted.vcf.gz"
+SAMPLE_SORTED_AUTOSOME_FILE="${IN_DIR}/${SAMPLE}.autosome.vcf.gz"
 R_DIR="${IN_DIR_MAIN}/repeats"
 SAMPLE_R_FILE="${R_DIR}/${SAMPLE}.r.vcf.gz"
 CATALOG="/projects/rohlfslab/shared/TR_catalogs/TR_catalog_normalized.bed"
@@ -48,10 +49,15 @@ mkdir -p ${MATRIX_FINAL_DIR}
 
 SAMPLE_BED_FILE="${BED_DIR}/${SAMPLE}.bed"
 
+# only autosomes included in this study!
+bcftools view -r chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22 "$SAMPLE_SORTED_FILE" -Oz -o "$SAMPLE_SORTED_AUTOSOME_FILE"
+tabix -p vcf "$SAMPLE_SORTED_AUTOSOME_FILE"
+
 conda deactivate
 conda activate ds_env
+
 # finds the copy number per TR
-./calculate_tr_repeat_lengths.py "$SAMPLE_SORTED_FILE" "$SAMPLE_R_FILE" "$SAMPLE" "False"
+./calculate_tr_repeat_lengths.py "$SAMPLE_SORTED_AUTOSOME_FILE" "$SAMPLE_R_FILE" "$SAMPLE" "False"
 conda deactivate
 
 conda activate longtr_venv
