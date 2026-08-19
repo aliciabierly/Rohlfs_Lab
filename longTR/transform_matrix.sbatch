@@ -4,7 +4,7 @@
 #SBATCH --time=1-00:0:00                 # increased time for reliability
 #SBATCH --cpus-per-task=1
 #SBATCH --ntasks=1
-#SBATCH --partition=compute
+#SBATCH --partition=rohlfs
 #SBATCH --account=rohlfslab
 #SBATCH --output=logs/transform_matrix_%A.out
 #SBATCH --error=logs/transform_matrix_%A.err   # Keep error files !
@@ -22,7 +22,7 @@ module load bedtools
 
 ### PATHS
 SCRATCH="/scratch/rohlfslab/abierly2"
-IN_DIR_MAIN="${SCRATCH}/LongTR"
+IN_DIR_MAIN="${SCRATCH}/LongTR_indelneg15"
 IN_DIR="${IN_DIR_MAIN}/sorted_vcfs"
 BED_DIR="${IN_DIR_MAIN}/bedfiles"
 SAMPLE_SORTED_FILE="${IN_DIR}/${SAMPLE}.sorted.vcf.gz"
@@ -36,6 +36,10 @@ MATRIX_TEMP_DIR="${IN_DIR_MAIN}/matrix_temp"
 MATRIX_FINAL_DIR="${IN_DIR_MAIN}/matrix_final"
 
 conda activate ds_env
+
+awk -F'\t' 'NF >= 10' "${MATRIX_FINAL_DIR}/all.gt.txt" > tmp && mv tmp "${MATRIX_FINAL_DIR}/all.gt.txt"
+awk -F'\t' 'NF >= 10' "${MATRIX_FINAL_DIR}/all.het.txt" > tmp && mv tmp "${MATRIX_FINAL_DIR}/all.het.txt"
+
 # Transpose genotype file
     datamash transpose \
         < "${MATRIX_FINAL_DIR}/all.gt.txt" \

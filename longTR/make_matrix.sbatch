@@ -4,7 +4,7 @@
 #SBATCH --time=1-00:0:00                 # increased time for reliability
 #SBATCH --cpus-per-task=1
 #SBATCH --ntasks=1
-#SBATCH --partition=compute
+#SBATCH --partition=rohlfs
 #SBATCH --account=rohlfslab
 #SBATCH --output=logs/make_matrix_%A.out
 #SBATCH --error=logs/make_matrix_%A.err   # Keep error files !
@@ -23,7 +23,7 @@ module load bedtools
 
 ### PATHS
 SCRATCH="/scratch/rohlfslab/abierly2"
-IN_DIR_MAIN="${SCRATCH}/LongTR"
+IN_DIR_MAIN="${SCRATCH}/LongTR_indelneg15"
 IN_DIR="${IN_DIR_MAIN}/sorted_vcfs"
 BED_DIR="${IN_DIR_MAIN}/bedfiles"
 SAMPLE_SORTED_FILE="${IN_DIR}/${SAMPLE}.sorted.vcf.gz"
@@ -39,16 +39,14 @@ MATRIX_FINAL_DIR="${IN_DIR_MAIN}/matrix_final"
 # Combine genotype files
 for f in "${MATRIX_TEMP_DIR}"/*.gt.txt; do
     printf "%s\t" "$(basename "${f%.gt.txt}")"
-    cat "$f"
-    echo
+    tr -d '\n' < "$f"
+    printf "\n"
 done > "${MATRIX_FINAL_DIR}/all.gt.txt"
-
 
 # Combine heterozygosity files
 for f in "${MATRIX_TEMP_DIR}"/*.het.txt; do
     printf "%s\t" "$(basename "${f%.het.txt}")"
-    cat "$f"
-    echo
+    tr -d '\n' < "$f"
+    printf "\n"
 done > "${MATRIX_FINAL_DIR}/all.het.txt"
-
 conda deactivate

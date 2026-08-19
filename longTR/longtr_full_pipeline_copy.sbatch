@@ -1,12 +1,12 @@
 #!/bin/bash
 #SBATCH --job-name=longtr_full_pipeline
-#SBATCH --mem=48G
-#SBATCH --time=3-00:0:00                 # increased time for reliability
+#SBATCH --mem=32G
+#SBATCH --time=4-00:0:00                 # increased time for reliability
 #SBATCH --cpus-per-task=24
 #SBATCH --ntasks=1
 #SBATCH --partition=computelong
 #SBATCH --account=rohlfslab
-#SBATCH --array=3-711%35                # only 35 running at once
+#SBATCH --array=1-711%35                # only 35 running at once
 #SBATCH --output=logs/longtr_%A_%a.out
 #SBATCH --error=logs/longtr_%A_%a.err   # Keep error files !
 
@@ -39,7 +39,7 @@ CRAM="${OUTDIR_CRAM}/${SAMPLE}.t2t.cram"
 CRAI="${CRAM}.crai"
 
 # Output directories
-OUTDIR_MAIN="${SCRATCH}/LongTR_indel2"
+OUTDIR_MAIN="${SCRATCH}/LongTR_indelneg15" ### MUST CHANGE
 OUTDIR="${OUTDIR_MAIN}/longTR_pipeline_${SAMPLE}"
 MERGED_DIR="${OUTDIR_MAIN}/merged_vcfs"
 mkdir -p ${OUTDIR}
@@ -119,7 +119,8 @@ else
             --regions \$BED \
             --tr-vcf \${VCF_OUT} \
             --min-mean-qual 0 \
-	    --indel-flank-len 2 \
+	    --indel-flank-len 5 \
+            --alignment-params -1,-0.458675,-1,-0.458675,-0.00005800168,-15,-15 \
             --log /dev/null  # Discard LongTR verbose logs
 
         # Index the VCF
