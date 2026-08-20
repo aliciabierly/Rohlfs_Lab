@@ -1,3 +1,0 @@
-[E::cram_uncompress_block] Block CRC32 failure
-[E::cram_next_slice] Failure to decode slice
-samtools view: retrieval of region #0 failed

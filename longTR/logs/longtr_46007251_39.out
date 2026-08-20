@@ -1,9 +1,0 @@
-LongTR full pipeline starting
-Wed Aug  5 16:05:23 PDT 2026
-Processing sample: HG00261
-Missing or unindexed: /scratch/rohlfslab/abierly2/LongTR_indel2/longTR_pipeline_HG00261/HG00261.chr1.vcf.gz
-Some per-chromosome VCFs missing. Running genotyping...
-Processing chromosome chrM...
-Chromosome chrM complete.
-Processing chromosome chrY...
-Chromosome chrY complete.
