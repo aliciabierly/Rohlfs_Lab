@@ -8,14 +8,14 @@
 #SBATCH --error=logs/combine_deletions_%j.err
 
 module load miniconda3
-SPECIFIC_DIR="LongTR_gf"
+SPECIFIC_DIR="LongTR"
 INPUT_DIR="/scratch/rohlfslab/abierly2/${SPECIFIC_DIR}/deletions"
 
 # combine individual files into one
-#cat "${INPUT_DIR}"/*.deletions.txt \
-#    > "${INPUT_DIR}/all_deletions.txt"
+cat "${INPUT_DIR}"/*.deletions.txt \
+    > "${INPUT_DIR}/all_deletions.txt"
 
-#rm "${INPUT_DIR}"/*.deletions.txt # remove intermediate files
+rm "${INPUT_DIR}"/*.deletions.txt # remove intermediate files
 
 # plot histograms
 conda activate ds_env
