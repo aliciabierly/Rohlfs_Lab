@@ -60,5 +60,6 @@ NR == 1 {
 }
 ' "$INPUT_FILE" > "$INITIAL_OUTPUT"
 
-paste "$CATALOG" "$INITIAL_OUTPUT" > "$OUTPUT_FILE"
+printf "chr\tstart\tend\tmotif\tn\thet\n" > "$OUTPUT_FILE"
+paste "$CATALOG" "$INITIAL_OUTPUT" >> "$OUTPUT_FILE"
 rm "$INITIAL_OUTPUT"
