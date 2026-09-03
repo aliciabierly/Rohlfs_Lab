@@ -7,7 +7,7 @@ module load bcftools
 SAMPLE=$1
 
 ### DIRECTORIES
-VCF_DIR="/gpfs/scratch/rohlfslab/abierly2/merged_vcfs_filtered"
+VCF_DIR="/gpfs/scratch/rohlfslab/abierly2/LongTR_gf/sorted_vcfs"
 TRACTS_DIR="/gpfs/scratch/rohlfslab/abierly2"
 
 # out directory
@@ -17,7 +17,7 @@ mkdir -p $OUTDIR
 mkdir -p $OUTDIR_TEMP
 
 ### FILE PATHS
-VCF="${VCF_DIR}/${SAMPLE}.filtered.vcf.gz"
+VCF="${VCF_DIR}/${SAMPLE}.autosome.no_del.vcf.gz"
 ARCHAIC_TRACTS="${TRACTS_DIR}/t2t_coordinates_mapped.bed"
 ARCHAIC_SAMPLE_TRACTS="${OUTDIR_TEMP}/${SAMPLE}.archaic.txt"
 
@@ -100,6 +100,7 @@ else
     echo "Row counts differ: file1=$rows_hap1, file2=$rows_hap2 for $SAMPLE"
 fi
 
+
 echo "Job done: $(date)"
 
-rm $OUTDIR_TEMP/$SAMPLE*
+#rm $OUTDIR_TEMP/$SAMPLE*
