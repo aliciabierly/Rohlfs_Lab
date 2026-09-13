@@ -1,0 +1,8 @@
+--2026-09-13 16:41:47--  https://s3-us-west-2.amazonaws.com/human-pangenomics/T2T/CHM13/assemblies/variants/1000_Genomes_Project/chm13v2.0/1KGP.CHM13v2.0.chr1.recalibrated.snp_indel.pass.vcf.gz
+Resolving s3-us-west-2.amazonaws.com (s3-us-west-2.amazonaws.com)... 52.92.210.120, 3.5.87.116, 3.5.84.252, ...
+Connecting to s3-us-west-2.amazonaws.com (s3-us-west-2.amazonaws.com)|52.92.210.120|:443... connected.
+HTTP request sent, awaiting response... 404 Not Found
+2026-09-13 16:41:47 ERROR 404: Not Found.
+
+Failed to read from /scratch/rohlfslab/abierly2/snps_indels/1KGP.CHM13v2.0.chr1.recalibrated.snp_indel.pass.vcf.gz: unknown file type
+tbx_index_build3 failed: /scratch/rohlfslab/abierly2/snps_indels/selected_samples.chr1.vcf.gz
