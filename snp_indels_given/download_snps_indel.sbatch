@@ -29,4 +29,4 @@ bcftools view \
 
 tabix -p vcf "${OUTDIR}/selected_samples.chr1.vcf.gz"
 
-#rm "${OUTDIR}/1KGP.CHM13v2.0.chr1.recalibrated.snp_indel.pass.vcf.gz"
+rm "${OUTDIR}/1KGP.CHM13v2.0.chr1.recalibrated.snp_indel.pass.vcf.gz"
