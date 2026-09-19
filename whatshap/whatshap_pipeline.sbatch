@@ -40,7 +40,7 @@ mkdir -p "/scratch/rohlfslab/abierly2/whatshap/phased_vcfs"
 
 
 # make the phased VCF of just variants for the particular sample
-if [[ ! -f "${OUTDIR}/${SAMPLE}.haplotagged_with_qual.bam.bai" ]]; then
+#if [[ ! -f "${OUTDIR}/${SAMPLE}.haplotagged_with_qual.bam.bai" ]]; then
 bcftools view \
     -s $SAMPLE \
     $VARIANT_FILE \
@@ -48,16 +48,10 @@ bcftools view \
     -o $PHASED_VCF
 bcftools index $PHASED_VCF
 
-whatshap haplotag \
-    --reference $REF \
-    $PHASED_VCF \
-    $BAM \
-    -o "${OUTDIR}/${SAMPLE}.haplotagged.bam"
-samtools index "${OUTDIR}/${SAMPLE}.haplotagged.bam"
-
-samtools view -h "${OUTDIR}/${SAMPLE}.haplotagged.bam" | \
+# make dummy bam file with fake quality scores
+samtools view -h --reference $REF $CRAM | \
         awk '
-        BEGIN {OFS=\"\t\"}
+	BEGIN {OFS=\"\t\"}
         /^@/ {print; next}
         {
             seq=\$10; qual=\$11
@@ -70,10 +64,18 @@ samtools view -h "${OUTDIR}/${SAMPLE}.haplotagged.bam" | \
             }
             print
         }' | \
-samtools view -o "${OUTDIR}/${SAMPLE}.haplotagged_with_qual.bam" -
-samtools index "${OUTDIR}/${SAMPLE}.haplotagged_with_qual.bam"
+        samtools view -b --reference $REF -o "${OUTDIR}/${SAMPLE}.with_qual.bam" -
+samtools index "${OUTDIR}/${SAMPLE}.with_qual.bam"
 
-rm "${OUTDIR}/${SAMPLE}.haplotagged.bam*"
+# happlotag data
+whatshap haplotag \
+    --reference $REF \
+    $PHASED_VCF \
+    "${OUTDIR}/${SAMPLE}.with_qual.bam" \
+    -o "${OUTDIR}/${SAMPLE}.haplotagged.bam"
+samtools index "${OUTDIR}/${SAMPLE}.haplotagged.bam"
+
+#rm "${OUTDIR}/${SAMPLE}.haplotagged.bam*"
 rm $PHASED_VCF "${$PHASED_VCF}.tbz"
 
-fi
+#fi
