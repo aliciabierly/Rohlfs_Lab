@@ -1,0 +1,5 @@
+ERROR: --regions option required
+
+Exiting...
+/var/spool/slurm/job47379062/slurm_script: line 42: --fasta: command not found
+tbx_index_build3 failed: /scratch/rohlfslab/abierly2/LongTR_fgneg1_haplotagged_allsamps/vcf_per_chrom/.vcf.gz

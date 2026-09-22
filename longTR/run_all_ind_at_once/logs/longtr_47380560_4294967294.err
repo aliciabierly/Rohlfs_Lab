@@ -1,0 +1,2 @@
+find: ‘/scratch/rohlfslab/abierly2/LongTR_fgneg1_haplotagged_allsamps/vcf_per_chrom_parallel/tmp/catalog_files’: No such file or directory
+tbx_index_build3 failed: /scratch/rohlfslab/abierly2/LongTR_fgneg1_haplotagged_allsamps/vcf_per_chrom_parallel/.vcf.gz

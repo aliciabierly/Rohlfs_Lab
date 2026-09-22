@@ -1,0 +1,12 @@
+Found 1 sample(s) in input VCF
+Found 1 sample(s) in BAM file
+Number of supplementary alignments: 0
+Number of non-singleton groups: 0
+Skipped 0 groups
+Found 43285 reads covering 29501 variants
+
+== SUMMARY ==
+Total alignments processed:                    201441
+Alignments that could be tagged:                42811
+Alignments spanning multiple phase sets:            0
+Finished in 58.4 s
