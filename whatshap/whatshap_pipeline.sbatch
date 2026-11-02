@@ -9,12 +9,10 @@
 #SBATCH --account=rohlfslab
 #SBATCH --output=logs/filter_longtr_%A_%a.out
 #SBATCH --error=logs/filter_longtr_%A_%a.err
+#SBATCH --mail-user abierly2@uoregon.edu
 # File created by Hannah Siegel
 
 module load miniconda3/20240410
-# source $(conda info --base)/etc/profile.d/conda.sh
-# virtual env I created that has longtr installed on it
-# instructions for longTR installation are on longTR github
 conda activate whatshap_env
 module load samtools
 module load parallel/20241222
@@ -49,22 +47,35 @@ bcftools view \
 bcftools index $PHASED_VCF
 
 # make dummy bam file with fake quality scores
-samtools view -h --reference $REF $CRAM | \
-        awk '
-	BEGIN {OFS=\"\t\"}
-        /^@/ {print; next}
-        {
-            seq=\$10; qual=\$11
-            if (seq == \"*\") { \$11=\"*\"; print; next }
-            if (qual == \"*\") {
-                newq=\"\"
-                seqlen=length(seq)
-                for(i=1; i<=seqlen; i++) newq = newq \"0\"
-                \$11 = newq
-            }
+# Make BAM with dummy quality scores for reads where QUAL is missing
+# Make BAM with dummy quality scores for reads where QUAL is missing
+samtools view -h --reference "$REF" "$CRAM" | \
+awk '
+    BEGIN {OFS="\t"}
+    /^@/ {print; next}
+    {
+        seq=$10
+        qual=$11
+
+        if (seq == "*") {
+            $11="*"
             print
-        }' | \
-        samtools view -b --reference $REF -o "${OUTDIR}/${SAMPLE}.with_qual.bam" -
+            next
+        }
+
+        if (qual == "*") {
+            newq=""
+            seqlen=length(seq)
+            for(i=1; i<=seqlen; i++)
+                newq = newq "0"
+            $11 = newq
+        }
+
+        print
+    }' | \
+samtools view -b --reference "$REF" \
+    -o "${OUTDIR}/${SAMPLE}.with_qual.bam" -
+
 samtools index "${OUTDIR}/${SAMPLE}.with_qual.bam"
 
 # happlotag data

@@ -1,0 +1,37 @@
+#!/bin/bash
+#SBATCH --job-name=sv
+#SBATCH --mem=32G
+#SBATCH --time=23:0:00                 # increased time for reliability
+#SBATCH --ntasks=8
+#SBATCH --partition=compute
+#SBATCH --account=rohlfslab
+#SBATCH --output=logs/%A.out
+#SBATCH --error=logs/%A.err   # Keep error files !
+
+module load parallel
+module load bcftools
+
+SV_FILE="filtered.1KGP.CHM13v2.0.whole_genome.recalibrated.snp_indel.pass.phased.native_maps.2504.bcf.gz"
+OUT_DIR="/scratch/rohlfslab/abierly2/sv_file"
+TMP_FILE=""
+OUT_FILE="${OUT_DIR}/snp_indel_pass.txt"
+
+mkdir -p "${OUT_DIR}/tmp"
+
+# one pipe
+gzip -dk $SV_FILE | bcftools +fill-tags filtered.1KGP.CHM13v2.0.whole_genome.recalibrated.snp_indel.pass.phased.native_maps.2504.bcf -Ob -o out.bcf -- -t AC_Het
+
+
+# gunzip new file
+gzip -dc $SV_FILE > decompressed-file
+
+# add heterozygousity proportion
+bcftools +fill-tags filtered.1KGP.CHM13v2.0.whole_genome.recalibrated.snp_indel.pass.phased.native_maps.2504.bcf -Ob -o out.bcf -- -t AC_Het
+
+# revome snps with het==0
+# rezip file
+
+cat "${OUT_DIR}/tmp/chr{1..22}.txt" >> "$OUT_FILE"
+
+# summary table
+# span of 
