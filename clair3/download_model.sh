@@ -1,6 +1,7 @@
 #!/bin/bash
 
-OUT_DIR="/scratch/rohlfslab/abilery2/clair3"
+OUT_DIR="/scratch/rohlfslab/abierly2/clair3"
+mkdir -p $OUT_DIR
 
 wget -r -np -nH --cut-dirs=2 \
   -R "index.html*" \
