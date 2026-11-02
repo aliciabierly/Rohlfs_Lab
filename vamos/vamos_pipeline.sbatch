@@ -6,7 +6,7 @@
 #SBATCH --ntasks=1
 #SBATCH --partition=compute
 #SBATCH --account=rohlfslab
-#SBATCH --array=1-100%50                # only 35 running at once
+#SBATCH --array=1-467%50                # only 35 running at once
 #SBATCH --output=logs/vamos_%A_%a.out
 #SBATCH --error=logs/vamos_%A_%a.err   # Keep error files !
 
@@ -24,7 +24,7 @@ module load parallel/20241222
 module load bcftools
 
 ### PATHS
-SAMPLE=$(sed -n "${SLURM_ARRAY_TASK_ID}p" /projects/rohlfslab/shared/hannah_alicia_shared_sampleIDs.txt)
+SAMPLE=$(sed -n "${SLURM_ARRAY_TASK_ID}p" /projects/rohlfslab/abierly2/Rohlfs_Lab/data/filtered_samples_min_dp_14.txt)
 echo "Processing sample: $SAMPLE"
 
 # Reference genome & TR catalog
@@ -117,7 +117,7 @@ else
             --read -b \$TEMP_BAM \
             -r \$BED \
             -s \$SAMPLE \
-            -o \${VCF_OUT} -t 8
+            -o \${VCF_OUT} -t 1
 
         # Index the VCF
         tabix -p vcf \${VCF_OUT}
