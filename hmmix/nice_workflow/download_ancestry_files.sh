@@ -14,11 +14,18 @@ module load bcftools
 module load parallel
 
 OUTDIR="/scratch/rohlfslab/abierly2"
-
+OUTDIR_FINAL="${OUTDIR}/hmmix_files/archaic_bcfs"
 # download archaic files and extract content
-wget -P $OUTDIR "https://zenodo.org/records/14552025/files/archaic_vcf.tar.gz"
+#wget -P $OUTDIR "https://zenodo.org/records/14552025/files/archaic_vcf.tar.gz"
 tar -xzf "${OUTDIR}/archaic_vcf.tar.gz" -C "$OUTDIR"
+mkdir -p $OUTDIR_FINAL
 
+if [[ -f "${OUTDIR_FINAL}/chr1.bcf" ]]; then
+   echo "Archaic files already processed, exiting"
+   exit 0
+fi
+
+export OUTDIR_FINAL
 parallel -j "${SLURM_CPUS_PER_TASK}" '
 
     MAIN_DIR="/scratch/rohlfslab/abierly2/archaic_vcf"
@@ -47,9 +54,9 @@ parallel -j "${SLURM_CPUS_PER_TASK}" '
     # change merged file from .vcf.gz --> bcf and index
     bcftools view "$MERGED_VCF" -l 1 -O b > "$MERGED_BCF"
     bcftools index "$MERGED_BCF"
+    mv "$MERGED_BCF" "${MERGED_BCF}.csi" "$OUTDIR_FINAL"
 
 ' ::: {1..22}
 
 rm -r \
-    "/scratch/rohlfslab/abierly2/archaic_vcf/altai_Denisovan" \
-    "/scratch/rohlfslab/abierly2/archaic_vcf/altai_Neanderthal"
+    "/scratch/rohlfslab/abierly2/archaic_vcf/"

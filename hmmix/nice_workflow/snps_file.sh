@@ -2,7 +2,7 @@
 #SBATCH --job-name=index_file
 #SBATCH --mem=5G
 #SBATCH --time=2:00:00
-#SBATCH --cpus-per-task=10
+#SBATCH --cpus-per-task=8
 #SBATCH --ntasks=1
 #SBATCH --nodes=1
 #SBATCH --partition=compute
@@ -18,11 +18,16 @@ module load parallel
 SAMPLE_FILE="/projects/rohlfslab/abierly2/Rohlfs_Lab/data/filtered_samples_min_dp_14.txt"
 
 OUTDIR=$1
-OUTDIR_FINAL_SNP="/scratch/rohlfslab/abierly/snp_file"
+OUTDIR_FINAL_SNP="/scratch/rohlfslab/abierly/hmmix_files/snp_files"
 mkdir -p "${OUTDIR}/tmp"
-mkdir -p "$OUTDIR"
+mkdir -p "$OUTDIR_FINAL_SNP"
 
 SNP_INDEL_FILE="${OUTDIR}/tmp/snp_indel_file.bcf.gz"
+
+if [[ -f "${OUTDIR_FINAL_SNP}/chr1.bcf" ]]; then
+   echo "SNP files already exist. Exiting"
+   exit 0
+fi
 
 # download file
 if [[ ! -f "$SNP_INDEL_FILE" ]]; then
@@ -77,7 +82,7 @@ fi
 # calculate some stats over all samples: AC,AF,AN,NS,DP
 echo "Starting to recalculate variables in SV file: $(date)"
 
-export OUTDIR OUTDIR_FINAL_SNP SAMPLE_IDS SNP_INDEL_FILE
+export OUTDIR OUTDIR_FINAL_SNP SAMPLE_IDS SNP_INDEL_FILE SAMP_POP_FILE
 parallel -j "${SLURM_CPUS_PER_TASK}" '
     FILTERED_SNP_INDEL_FILE="${OUTDIR}/tmp/chr{}.bcf.gz"
     FINAL_BCF="${OUTDIR}/chr{}.bcf"
@@ -95,5 +100,7 @@ parallel -j "${SLURM_CPUS_PER_TASK}" '
     mv $FINAL_BCF "${FINAL_BCF}.csi" $OUTDIR_FINAL_SNP
 ' ::: {1..22}
 
-# remove intermediate files
-#rm "chr${SLURM_ARRAY_TASK_ID}.bcf.gz"
+SAMPLE_INFO_DIR="/scratch/rohlfslab/abierly2/hmmix_files/sample_info"
+mkdir -p $SAMPLE_INFO_DIR
+
+mv $SAMP_POP_FILE $SAMPLE_IDS $SAMPLE_JSON $SAMP_POP_FILE $SAMPLE_INFO_DIR
